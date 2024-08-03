@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import time
 
 # Funkcja do pobierania danych z Yahoo Finance
-@st.cache.data
+@st.cache_data
 def fetch_stock_data(ticker, start_date, end_date):
     try:
         data = yf.download(ticker, start=start_date, end=end_date)
