@@ -3,21 +3,17 @@ import pandas as pd
 import streamlit as st
 import yfinance as yf
 from datetime import datetime, timedelta
+import time
 
 # Funkcja do pobierania danych z Yahoo Finance
+@st.cache
 def fetch_stock_data(ticker, start_date, end_date):
     try:
-        # Pobieranie danych o akcjach dla podanego tickera w wybranym zakresie dat
         data = yf.download(ticker, start=start_date, end=end_date)
-        
-        # Upewnij się, że indeks danych jest typu DatetimeIndex
         if not isinstance(data.index, pd.DatetimeIndex):
             data.index = pd.to_datetime(data.index)
-        
-        # Resetowanie indeksu, aby 'Date' stała się kolumną
         data.reset_index(inplace=True)
         data['Date'] = pd.to_datetime(data['Date'])
-        
         return data
     except Exception as e:
         st.error(f"Nie udało się pobrać danych dla {ticker}: {e}")
@@ -29,7 +25,6 @@ today = datetime.now()
 start_date_default = today - timedelta(days=30)
 end_date_default = today
 
-# Wybór zakresu dat z predefiniowanych opcji
 st.subheader("Predefiniowane zakresy dat")
 range_selection = st.selectbox(
     "Wybierz zakres",
@@ -56,7 +51,6 @@ elif range_selection == "Ostatnie 2 lata":
     start_date = today - timedelta(days=730)
     end_date = today
 
-# Wybór widoku wykresów
 view_option = st.radio(
     "Wybierz widok",
     ["Widok szczegółowy", "Widok porównawczy"]
@@ -115,6 +109,7 @@ if view_option == "Widok porównawczy":
             data = fetch_stock_data(ticker, start_date, end_date)
             data['Ticker'] = ticker
             all_data = pd.concat([all_data, data], axis=0)
+            time.sleep(2)  # Dodanie opóźnienia między zapytaniami
 
         # Tworzenie wykresu porównawczego
         chart = alt.Chart(all_data).mark_line(size=3).encode(
