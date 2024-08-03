@@ -109,7 +109,7 @@ if view_option == "Widok porównawczy":
             data = fetch_stock_data(ticker, start_date, end_date)
             data['Ticker'] = ticker
             all_data = pd.concat([all_data, data], axis=0)
-            time.sleep(2)  # Dodanie opóźnienia między zapytaniami
+            time.sleep(1)  # Dodanie opóźnienia między zapytaniami
 
         # Tworzenie wykresu porównawczego
         chart = alt.Chart(all_data).mark_line(size=3).encode(
