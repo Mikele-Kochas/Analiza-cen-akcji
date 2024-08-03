@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import time
 
 # Funkcja do pobierania danych z Yahoo Finance
-@st.cache
+@st.cache.data
 def fetch_stock_data(ticker, start_date, end_date):
     try:
         data = yf.download(ticker, start=start_date, end=end_date)
@@ -109,7 +109,6 @@ if view_option == "Widok porównawczy":
             data = fetch_stock_data(ticker, start_date, end_date)
             data['Ticker'] = ticker
             all_data = pd.concat([all_data, data], axis=0)
-            time.sleep(1)  # Dodanie opóźnienia między zapytaniami
 
         # Tworzenie wykresu porównawczego
         chart = alt.Chart(all_data).mark_line(size=3).encode(
